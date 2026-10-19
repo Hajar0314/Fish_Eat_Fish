@@ -9,6 +9,18 @@
 | **Année universitaire** | 2026 / 2027 |
 | **Technologies** | JavaScript (ES6), p5.js, Canvas 2D, WebAudio API |
 | **Type de projet** | Jeu web 2D, sans serveur, sans dépendance à installer |
+| **Jeu en ligne** | [hajar0314.github.io/Fish_Eat_Fish](https://hajar0314.github.io/Fish_Eat_Fish/) |
+| **Vidéo de démonstration** | [youtu.be/kVYHpWNMzbM](https://youtu.be/kVYHpWNMzbM) |
+
+---
+
+## Démonstration en ligne
+
+Le jeu peut être essayé directement dans le navigateur, sans installation : **[ouvrir Fish Eat Fish — Deep Sea](https://hajar0314.github.io/Fish_Eat_Fish/)**.
+
+La vidéo ci-dessous présente les steering behaviors un par un, avec les vecteurs de debug (arrive, évitement d’obstacles, bounds, wander, flocage, evade, pursue et flee, suivi de leader), puis tous ensemble dans une vraie partie.
+
+<p align="center"><a href="https://youtu.be/kVYHpWNMzbM"><img src="https://img.youtube.com/vi/kVYHpWNMzbM/maxresdefault.jpg" alt="Vidéo de démonstration de Fish Eat Fish sur YouTube" width="700"></a><br><em>Cliquer sur l’image pour lancer la vidéo sur YouTube.</em></p>
 
 ---
 
@@ -92,6 +104,9 @@ python3 -m http.server 8000
 ```
 
 > Le jeu sauvegarde la boutique et la progression des stages dans le `localStorage` du navigateur (clés `feWallet` et `feStages`).
+
+
+<p align="center"><img src="./captures/fig1_ecran_titre.jpg" alt="Écran titre du jeu" width="850"><br><em>Figure 1 — écran titre de Fish Eat Fish — Deep Sea (Jouer, Stages, Boutique).</em></p>
 
 ### 3.2 Commandes
 
@@ -328,11 +343,17 @@ arrive(t, d = 100) {
 }
 ```
 
+
+<p align="center"><img src="./captures/fig2_arrive_debug.jpg" alt="Arrive en mode debug" width="850"><br><em>Figure 2 — comportement *arrive* en debug : la ligne verte est la vitesse, la ligne rouge la force de steering appliquée.</em></p>
+
 **Pursue / Evade** — on ne vise pas où est la cible, mais où elle **sera** (10 images plus tard). Pour les prédateurs, la version de `Predator` (`aim()`) va plus loin : elle intègre ce que le jeu a **appris** du joueur (section 9).
 ```js
 pursue(o) { return this.seek(p5.Vector.add(o.pos, o.vel.copy().mult(10))); }
 evade(o)  { return this.pursue(o).mult(-1); }
 ```
+
+
+<p align="center"><img src="./captures/fig3_pursue_flee_debug.jpg" alt="Pursue et flee en mode debug" width="850"><br><em>Figure 3 — *pursue* et *flee* en debug : le cercle rouge est la zone de détection du prédateur, qui recule après une morsure avant de relancer la chasse.</em></p>
 
 **Wander** — un point cible est placé sur un petit cercle (rayon 30) à 60 px devant le poisson. Son angle dérive aléatoirement (`±0,35` par image) avec une **mémoire** (`wt × 0,95`), ce qui donne des trajectoires courbes et fluides plutôt que du bruit.
 ```js
@@ -344,12 +365,18 @@ wander() {
 }
 ```
 
+
+<p align="center"><img src="./captures/fig4_wander.jpg" alt="Wander en mode debug" width="850"><br><em>Figure 4 — *wander* : le trait vert montre la direction qui dérive, le rouge la force d’errance.</em></p>
+
 **Separation** — chaque voisin trop proche pousse avec une force en **1/d²** : plus il est près, plus la répulsion est forte.
 ```js
 s.add(p5.Vector.sub(this.pos, o.pos).div(d * d));
 ```
 
 **Alignment / Cohesion** — le véhicule moyenne la vitesse (alignement) ou la position (cohésion) des voisins dans un rayon (60 px et 80 px par défaut). Ensemble avec la séparation, ces trois règles forment le **flocking** (bancs de Boids).
+
+
+<p align="center"><img src="./captures/fig5_boids_flocage.jpg" alt="Flocage : séparation, alignement, cohésion" width="850"><br><em>Figure 5 — flocage (séparation ≤ 28 px, alignement ≤ 60 px, cohésion ≤ 80 px) : le banc reste groupé, parallèle et sans collision.</em></p>
 
 **Obstacle avoidance** — version « deux points » : on projette deux points devant le poisson (à `lookAhead` et `lookAhead / 2`). Si un de ces points (ou la position actuelle) pénètre dans un obstacle, on dirige le poisson loin de lui, avec un poids ×2,5. On ne retient que l'obstacle **le plus menaçant**. Un test de proximité rapide élimine les obstacles lointains avant tout calcul.
 ```js
@@ -358,6 +385,9 @@ a2.set(px + ux * la / 2, py + uy * la / 2);  // point à mi-chemin
 // ... on garde l'obstacle dont la distance min (pos, a1, a2) est la plus petite
 return this.steer(p5.Vector.sub(a1, best.pos)).mult(2.5);
 ```
+
+
+<p align="center"><img src="./captures/fig6_obstacle_avoidance.jpg" alt="Évitement d’obstacles en mode debug" width="850"><br><em>Figure 6 — évitement d’obstacles : deux capteurs (traits jaunes) projetés devant le poisson ; au contact d’un rocher, une force de répulsion le contourne.</em></p>
 
 **Leader following** — chaque membre du banc : (1) *arrive* à un point situé **derrière** le leader, (2) s'il se trouve dans la trajectoire du leader (devant lui), il l'**évite** pour dégager le passage, (3) se **sépare** des autres membres.
 ```js
@@ -370,7 +400,13 @@ followLeader(leader, group, behind = 45) {
 }
 ```
 
+
+<p align="center"><img src="./captures/fig7_leader_following.jpg" alt="Suivi de leader" width="850"><br><em>Figure 7 — suivi de leader : le banc rejoint un point derrière le joueur (*arrive*), dégage sa trajectoire (*evade*) et garde ses distances (séparation).</em></p>
+
 **Bounds** — dès que le poisson entre dans une marge de 60 px du bord, une force le repousse vers l'intérieur (poids ×2). Les limites verticales varient selon l'espèce (certains prédateurs ne vivent qu'en profondeur).
+
+
+<p align="center"><img src="./captures/fig8_bounds.jpg" alt="Limites du monde" width="850"><br><em>Figure 8 — *bounds* : près du bord de la carte, une force repousse le poisson vers l’intérieur (marge de 60 px).</em></p>
 
 ### 7.3 Poids ajustables en direct
 
@@ -611,6 +647,11 @@ Avec le panneau de réglages (**S**), on peut **isoler** chaque comportement pou
 | L'apprentissage | **Apprentissage = 1**, répéter le même parcours, observer la ligne violette |
 | La chasse en groupe | Augmenter **Bancs de barracudas** / **Meutes d'orques** |
 | La persévérance | Faire varier **Persévérance de chasse ×** |
+
+
+<p align="center"><img src="./captures/fig9_en_jeu_debug.jpg" alt="Partie avec le mode debug" width="850"><br><em>Figure 9 — tous les comportements ensemble pendant une partie, avec le mode debug (**D**) activé.</em></p>
+
+<p align="center"><img src="./captures/fig10_en_jeu_sans_debug.jpg" alt="Partie sans le mode debug" width="850"><br><em>Figure 10 — la même partie sans les vecteurs : les steering behaviors produisent des déplacements naturels.</em></p>
 
 ### Scénario de démonstration conseillé (3 minutes)
 
