@@ -20,7 +20,7 @@ Le jeu peut être essayé directement dans le navigateur, sans installation : **
 
 La vidéo ci-dessous présente les steering behaviors un par un, avec les vecteurs de debug (arrive, évitement d’obstacles, bounds, wander, flocage, evade, pursue et flee, suivi de leader), puis tous ensemble dans une vraie partie.
 
-<p align="center"><a href="https://youtu.be/ee-cegjYU1M"><img src="https://img.youtu.be/ee-cegjYU1M.jpg" alt="Vidéo de démonstration de Fish Eat Fish sur YouTube" width="700"></a><br><em>Cliquer sur l’image pour lancer la vidéo sur YouTube.</em></p>
+<p align="center"><a href="https://img.youtube.com/vi/ee-cegjYU1M/0.jpg"><img src="https://img.youtu.be/ee-cegjYU1M.jpg" alt="Vidéo de démonstration de Fish Eat Fish sur YouTube" width="700"></a><br><em>Cliquer sur l’image pour lancer la vidéo sur YouTube.</em></p>
 
 ---
 
