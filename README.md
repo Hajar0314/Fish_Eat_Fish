@@ -10,7 +10,7 @@
 | **Technologies** | JavaScript (ES6), p5.js, Canvas 2D, WebAudio API |
 | **Type de projet** | Jeu web 2D, sans serveur, sans dépendance à installer |
 | **Jeu en ligne** | [hajar0314.github.io/Fish_Eat_Fish](https://hajar0314.github.io/Fish_Eat_Fish/) |
-| **Vidéo de démonstration** | [youtu.be/kVYHpWNMzbM](https://youtu.be/kVYHpWNMzbM) |
+| **Vidéo de démonstration** | [youtu.be/kVYHpWNMzbM](https://youtu.be/ee-cegjYU1M) |
 
 ---
 
